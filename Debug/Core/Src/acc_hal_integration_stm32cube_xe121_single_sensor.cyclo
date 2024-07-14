@@ -1,0 +1,10 @@
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:27:20:disable_interrupts	1
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:33:20:enable_interrupts	1
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:58:13:acc_hal_integration_sensor_transfer	3
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:106:6:acc_hal_integration_sensor_supply_on	3
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:117:6:acc_hal_integration_sensor_supply_off	3
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:128:6:acc_hal_integration_sensor_enable	3
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:142:6:acc_hal_integration_sensor_disable	3
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:157:6:acc_hal_integration_wait_for_sensor_interrupt	6
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:191:10:acc_hal_integration_sensor_count	1
+../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c:197:23:acc_hal_rss_integration_get_implementation	1
