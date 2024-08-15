@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := can_a121_shoot
+BUILD_ARTIFACT_NAME := f4_a121_sensor
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-can_a121_shoot.elf \
+f4_a121_sensor.elf \
 
 MAP_FILES += \
-can_a121_shoot.map \
+f4_a121_sensor.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-can_a121_shoot.list \
+f4_a121_sensor.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: can_a121_shoot.elf secondary-outputs
+main-build: f4_a121_sensor.elf secondary-outputs
 
 # Tool invocations
-can_a121_shoot.elf can_a121_shoot.map: $(OBJS) $(USER_OBJS) C:\Users\ryant\jims_projects\sensor_workspace\can_a121_shoot\STM32F401CCUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "can_a121_shoot.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\ryant\jims_projects\sensor_workspace\can_a121_shoot\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="can_a121_shoot.map" -Wl,--gc-sections -static -L"C:\Users\ryant\jims_projects\sensor_workspace\can_a121_shoot\cortex_m4_gcc\rss\lib" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+f4_a121_sensor.elf f4_a121_sensor.map: $(OBJS) $(USER_OBJS) C:\Users\ryant\jims_projects\sensor_workspace\f4_a121_sensor\STM32F401CCUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "f4_a121_sensor.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\ryant\jims_projects\sensor_workspace\f4_a121_sensor\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="f4_a121_sensor.map" -Wl,--gc-sections -static -L"C:\Users\ryant\jims_projects\sensor_workspace\f4_a121_sensor\cortex_m4_gcc\rss\lib" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-can_a121_shoot.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "can_a121_shoot.list"
+f4_a121_sensor.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "f4_a121_sensor.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) can_a121_shoot.elf can_a121_shoot.list can_a121_shoot.map default.size.stdout
+	-$(RM) default.size.stdout f4_a121_sensor.elf f4_a121_sensor.list f4_a121_sensor.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

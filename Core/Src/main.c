@@ -1,4 +1,4 @@
-	/* USER CODE BEGIN Header */
+/* USER CODE BEGIN Header */
 /**
  ******************************************************************************
  * @file           : main.c
@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "example_detector_distance_with_iq_data_print.h"
+#include "print_data_config.h"
 #include "example_basic_service.h"
 #include "canspi.h"
 /* USER CODE END Includes */
@@ -58,17 +58,11 @@ static void MX_SPI1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_SPI2_Init(void);
 /* USER CODE BEGIN PFP */
-//extern uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//int _write(int file, char *ptr, int len) {
-//	(void) file;
-//	while (!(CDC_Transmit_FS((uint8_t*) ptr, len) == USBD_BUSY))
-//		;
-//	return len;
-//}
 /* USER CODE END 0 */
 
 /**
@@ -114,17 +108,38 @@ int main(void)
 		  HAL_Delay(300);
 	  }
   }
+
+  float x_intercepts[] = {.1, 0.20, 2.20};
+  int y_intercepts[] = {4000, 800, 75};
+
+  const PrintDataConfig print_data_config = {
+      .start = 10,
+      .step = 2,
+      .x_intercepts = {x_intercepts[0], x_intercepts[1], x_intercepts[2]},
+      .y_intercepts = {y_intercepts[0], y_intercepts[1], y_intercepts[2]},
+      .line1_slope = (float)(y_intercepts[1] - y_intercepts[0]) / (x_intercepts[1] - x_intercepts[0]),
+      .line2_slope = (float)(y_intercepts[2] - y_intercepts[1]) / (x_intercepts[2] - x_intercepts[1]),
+      .y_inter_line1 = -(((float)(y_intercepts[1] - y_intercepts[0]) / (x_intercepts[1] - x_intercepts[0]) * x_intercepts[0]) - y_intercepts[0]),
+      .y_inter_line2 = -(((float)(y_intercepts[2] - y_intercepts[1]) / (x_intercepts[2] - x_intercepts[1]) * x_intercepts[1]) - y_intercepts[1]),
+      .sweeps_per_frame = 1,
+      .frame_rate = 100.0f,
+      .start_point = 14,
+      .num_points = 100,
+      .profile = 1,
+      .receiver_gain = 14,
+      .prf = 0
+  };
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-//		acc_example_service(0, NULL);
-		acc_example_detector_distance_with_iq_data_print(0, NULL);
+		acc_example_service(0, NULL, &print_data_config);
+//		acc_example_detector_distance_with_iq_data_print(0, NULL);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		HAL_Delay(1000);
+		HAL_Delay(100);
 	}
   /* USER CODE END 3 */
 }
@@ -197,7 +212,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;

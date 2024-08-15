@@ -1,12 +1,12 @@
 Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.o: \
  ../Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.c \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/rss/include/acc_definitions_common.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/rss/include/acc_hal_definitions_a121.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/rss/include/acc_definitions_common.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_hal_integration_a121.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration_log.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/rss/include/acc_definitions_common.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/rss/include/acc_hal_definitions_a121.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/rss/include/acc_definitions_common.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_hal_integration_a121.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration_log.h \
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -35,13 +35,13 @@ Core/Src/acc_hal_integration_stm32cube_xe121_single_sensor.o: \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/rss/include/acc_definitions_common.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/rss/include/acc_hal_definitions_a121.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/rss/include/acc_definitions_common.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_hal_integration_a121.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration_log.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/rss/include/acc_definitions_common.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/rss/include/acc_hal_definitions_a121.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/rss/include/acc_definitions_common.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_hal_integration_a121.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration_log.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:

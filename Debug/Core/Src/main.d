@@ -27,9 +27,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- ../Core/Inc/example_detector_distance_with_iq_data_print.h \
- ../Core/Inc/example_basic_service.h ../Core/Inc/canspi.h \
- ../Core/Inc/main.h
+ ../Core/Inc/print_data_config.h ../Core/Inc/example_basic_service.h \
+ ../Core/Inc/canspi.h ../Core/Inc/main.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -59,7 +58,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
-../Core/Inc/example_detector_distance_with_iq_data_print.h:
+../Core/Inc/print_data_config.h:
 ../Core/Inc/example_basic_service.h:
 ../Core/Inc/canspi.h:
 ../Core/Inc/main.h:

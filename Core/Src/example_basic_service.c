@@ -22,6 +22,7 @@
 #include "acc_version.h"
 #include "math.h"
 #include "canspi.h"
+#include "print_data_config.h"
 
 
 /** \example example_service.c
@@ -44,23 +45,23 @@
 #define SENSOR_TIMEOUT_MS  (1000U)
 #define MAX_DATA_ENTRY_LEN (15U) // "-32000+-32000i" + zero termination
 
-static void set_config(acc_config_t *config);
+static void set_config(acc_config_t *config, const PrintDataConfig *print_data_config);
 
 
 static bool do_sensor_calibration_and_prepare(acc_sensor_t *sensor, acc_config_t *config, void *buffer, uint32_t buffer_size);
 
 
-float print_data(acc_int16_complex_t *data, uint16_t data_length, acc_config_t *config, uint16_t temp);
+float print_data(acc_int16_complex_t *data, uint16_t data_length, const PrintDataConfig *print_data_config, uint16_t temp);
 
 
 static void cleanup(acc_config_t *config, acc_processing_t *processing,
                     acc_sensor_t *sensor, void *buffer);
 
 
-float acc_example_service(int argc, char *argv[]);
+float acc_example_service(int argc, char *argv[], const PrintDataConfig *print_data_config);
 
 
-float acc_example_service(int argc, char *argv[])
+float acc_example_service(int argc, char *argv[], const PrintDataConfig *print_data_config)
 {
         (void)argc;
         (void)argv;
@@ -71,6 +72,7 @@ float acc_example_service(int argc, char *argv[])
         uint32_t                  buffer_size = 0;
         acc_processing_metadata_t proc_meta;
         acc_processing_result_t   proc_result;
+
 
 //        printf("Acconeer software version %s\n", acc_version_get());
 
@@ -89,7 +91,7 @@ float acc_example_service(int argc, char *argv[])
                 return EXIT_FAILURE;
         }
 
-        set_config(config);
+        set_config(config, print_data_config);
 
         // Print the configuration
 //        acc_config_log(config);
@@ -136,7 +138,7 @@ float acc_example_service(int argc, char *argv[])
                 return EXIT_FAILURE;
         }
 
-        const uint32_t update_count = 2U;
+        const uint32_t update_count = 5U;
 
         float distance = 0.0;
 
@@ -186,7 +188,7 @@ float acc_example_service(int argc, char *argv[])
                 }
                 else
                 {
-                	distance = print_data(proc_result.frame, proc_meta.frame_data_length, config, proc_result.temperature);
+                	distance = print_data(proc_result.frame, proc_meta.frame_data_length, print_data_config, proc_result.temperature);
                 }
         }
 
@@ -196,20 +198,19 @@ float acc_example_service(int argc, char *argv[])
 }
 
 
-static void set_config(acc_config_t *config)
+static void set_config(acc_config_t *config, const PrintDataConfig *print_data_config)
 {
         // Add configuration of the sensor here
 
 
-		acc_config_sweeps_per_frame_set(config, 1);
-		acc_config_frame_rate_set(config, 100);
-
-		acc_config_start_point_set(config, 14);
-		acc_config_num_points_set(config, 400);
-		acc_config_step_length_set(config, 1);
-		acc_config_profile_set(config, ACC_CONFIG_PROFILE_1);
-		acc_config_receiver_gain_set(config, 11);
-		acc_config_prf_set(config, ACC_CONFIG_PRF_19_5_MHZ);
+    acc_config_sweeps_per_frame_set(config, print_data_config->sweeps_per_frame);
+    acc_config_frame_rate_set(config, print_data_config->frame_rate);
+    acc_config_start_point_set(config, print_data_config->start_point);
+    acc_config_num_points_set(config, print_data_config->num_points);
+    acc_config_step_length_set(config, print_data_config->step);
+    acc_config_profile_set(config, print_data_config->profile);
+    acc_config_receiver_gain_set(config, print_data_config->receiver_gain);
+    acc_config_prf_set(config, print_data_config->prf);
 
 }
 
@@ -252,129 +253,108 @@ static bool do_sensor_calibration_and_prepare(acc_sensor_t *sensor, acc_config_t
 }
 
 
-float print_data(acc_int16_complex_t *data, uint16_t data_length, acc_config_t *config, uint16_t temp)
+float print_data(acc_int16_complex_t *data, uint16_t data_length, const PrintDataConfig *print_data_config, uint16_t temp)
 {
+    float distances[400];
+    int amplitudes[400];
 
-        char buffer[MAX_DATA_ENTRY_LEN];
-        uint32_t start = acc_config_start_point_get(config);
-        uint16_t step = acc_config_step_length_get(config);
+    int counter = 0;
+    float max_distance = 0;
+    int max_amplitude = 0;
+    float first_threshold_x = 0;
+    int first_threshold_y = 0;
+    float first_below_threshold_x = 0;
+    int first_below_threshold_y = 0;
+//    float distances_in_range[200];
 
-        float distances[400];
-        int amplitudes[400];
+    for (uint16_t i = 0; i < data_length; i++)
+    {
+        uint32_t amplitude = (uint32_t)sqrtf(data[i].real * data[i].real + data[i].imag * data[i].imag);
+        float distance = ((i * print_data_config->step * 0.0025f) + print_data_config->start * 0.0025f);
 
-        float distances_in_range[200];
-        int amplitudes_in_range[200];
+        distances[i] = distance;
+        amplitudes[i] = amplitude;
 
-        float x_intercepts[] = {0, 0.20, 2.20};
-        int y_intercepts[] = {8000, 800, 75};
-
-        float line1_slope = y_intercepts[1] - y_intercepts[0] / x_intercepts[1] - x_intercepts[0];
-        float line2_slope = y_intercepts[2] - y_intercepts[1] / x_intercepts[2] - x_intercepts[1];
-
-        float y_inter_line1 = ((line1_slope * x_intercepts[0]) - y_intercepts[0]) * -1;
-        float y_inter_line2 = ((line2_slope * x_intercepts[1]) - y_intercepts[1]) * -1;
-
-        int counter = 0;
-        float max_distance = 0;
-        int max_amplitude = 0;
-        float first_threshold_x = 0;
-        int first_threshold_y = 0;
-        float first_below_threshold_x = 0;
-        int first_below_threshold_y = 0;
-
-        for (uint16_t i = 0; i < data_length; i++)
+        float threshold = 0;
+        if ((distance > print_data_config->x_intercepts[0]) && (distance < print_data_config->x_intercepts[1]))
         {
-                uint32_t amplitude = (uint32_t) sqrt(data[i].real * data[i].real + data[i].imag * data[i].imag);
-				float distance = ((i * step * 0.0025) + start * 0.0025) / sqrt(2.2);
-				distances[i] = distance;
-				amplitudes[i] = amplitude;
-
-//				printf("%.4f,%"PRIu32"", distance, amplitude);
-//				printf("\n");
-
-				if ((distance > x_intercepts[0]) && (distance < x_intercepts[1]))
-				{
-					if ((amplitude - ((distance * line1_slope) + y_inter_line1)) > 0)
-					{
-						distances_in_range[counter] = distance;
-						counter = counter + 1;
-						if (max_amplitude < amplitude) {
-							max_amplitude = amplitude;
-							max_distance = distance;
-						}
-						if (first_threshold_x == 0) {
-							first_threshold_x = distance;
-							first_threshold_y = amplitude;
-							first_below_threshold_x = distances[i - 1];
-							first_below_threshold_y = amplitudes[i - 1];
-						}
-					}
-				} else if ((distance > x_intercepts[1]) && (distance < x_intercepts[2])) {
-					if ((amplitude - ((distance * line2_slope) + y_inter_line2)) > 0)
-					{
-						distances_in_range[counter] = distance;
-						counter = counter + 1;
-						if (max_amplitude < amplitude) {
-							max_amplitude = amplitude;
-							max_distance = distance;
-						}
-						if (first_threshold_x == 0) {
-							first_threshold_x = distance;
-							first_threshold_y = amplitude;
-							first_below_threshold_x = distances[i - 1];
-							first_below_threshold_y = amplitudes[i - 1];
-						}
-					}
-				}
+            threshold = (distance * print_data_config->line1_slope) + print_data_config->y_inter_line1;
+        }
+        else if ((distance > print_data_config->x_intercepts[1]) && (distance < print_data_config->x_intercepts[2]))
+        {
+            threshold = (distance * print_data_config->line2_slope) + print_data_config->y_inter_line2;
+        }
+        else
+        {
+            continue; // Skip if not in range
         }
 
-		float selected = 0;
+        if ((amplitude - threshold) > 0)
+        {
+//            if (counter < 200)
+//            {
+//                distances_in_range[counter] = distance;
+//            }
+//            counter++;
 
-		float first_threshold_line_value;
-		float below_threshold_line_value;
+            if (max_amplitude < amplitude)
+            {
+                max_amplitude = amplitude;
+                max_distance = distance;
+            }
 
-		if ((first_threshold_x > x_intercepts[0]) && (first_threshold_x < x_intercepts[1])) {
-			first_threshold_line_value = (first_threshold_x * line1_slope) + y_inter_line1;
-			below_threshold_line_value = (first_below_threshold_x * line1_slope) + y_inter_line1;
-		} else if ((first_threshold_x > x_intercepts[1]) && (first_threshold_x < x_intercepts[2])) {
-			first_threshold_line_value = (first_threshold_x * line2_slope) + y_inter_line2;
-			below_threshold_line_value = (first_below_threshold_x * line2_slope) + y_inter_line2;
-		}
+            if (first_threshold_x == 0)
+            {
+                first_threshold_x = distance;
+                first_threshold_y = amplitude;
+                first_below_threshold_x = distances[i - 1];
+                first_below_threshold_y = amplitudes[i - 1];
+            }
+        }
+    }
 
-		selected = (1 - (first_threshold_y - first_threshold_line_value)/(first_threshold_y - first_below_threshold_y))*(first_threshold_x - first_below_threshold_x) + first_below_threshold_x;
+    float selected = 0;
+    float first_threshold_line_value;
+    float below_threshold_line_value;
 
-		// Doing this to say anything that beneath our threshold at beginning of distance
-		if (amplitudes[0] > 8000) {
-			selected = x_intercepts[0];
-		}
+    if ((first_threshold_x > print_data_config->x_intercepts[0]) && (first_threshold_x < print_data_config->x_intercepts[1]))
+    {
+        first_threshold_line_value = (first_threshold_x * print_data_config->line1_slope) + print_data_config->y_inter_line1;
+        below_threshold_line_value = (first_below_threshold_x * print_data_config->line1_slope) + print_data_config->y_inter_line1;
+    }
+    else if ((first_threshold_x > print_data_config->x_intercepts[1]) && (first_threshold_x < print_data_config->x_intercepts[2]))
+    {
+        first_threshold_line_value = (first_threshold_x * print_data_config->line2_slope) + print_data_config->y_inter_line2;
+        below_threshold_line_value = (first_below_threshold_x * print_data_config->line2_slope) + print_data_config->y_inter_line2;
+    }
 
-		uCAN_MSG msg;
-		msg.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
-		msg.frame.id = 0x13;
-		msg.frame.dlc = 8;
-		//First 4 bytes for distance and next 4 bytes for strength
-		// Both are float values so we need to convert them to integer by multiplying with 100
-		// and then send them
-		uint32_t distance = {(uint32_t) (selected * 100)};
+    selected = (1 - (first_threshold_y - first_threshold_line_value) / (first_threshold_y - first_below_threshold_y)) * (first_threshold_x - first_below_threshold_x) + first_below_threshold_x;
 
-	//123.456
-		// Strength can be negative so we need to include the sign bit as well
-		// This can be done by adding 0x80000000 to the strength value
+    if (amplitudes[0] > 8000)
+    {
+        selected = print_data_config->x_intercepts[0];
+    }
 
-	//	uint32_t distance[8] = {(uint32_t) (2.1 * 100)};
+    uCAN_MSG msg;
+    msg.frame.idType = dSTANDARD_CAN_MSG_ID_2_0B;
+    msg.frame.id = 0x13;
+    msg.frame.dlc = 8;
 
-		msg.frame.data0 = (distance >> 24) & 0xFF;
-		msg.frame.data1 = (distance >> 16) & 0xFF;
-		msg.frame.data2 = (distance >> 8) & 0xFF;
-		msg.frame.data3 = distance & 0xFF;
-		msg.frame.data4 = temp;
-		msg.frame.data5 = 0;
-		msg.frame.data6 = 0;
-		msg.frame.data7 = 0;
+    uint32_t first_dist = (uint32_t)(distances[0]);
+    uint32_t distance = (uint32_t)(selected * 10000);
 
-		CANSPI_Transmit(&msg);
+    msg.frame.data0 = (distance >> 24) & 0xFF;
+    msg.frame.data1 = (distance >> 16) & 0xFF;
+    msg.frame.data2 = (distance >> 8) & 0xFF;
+    msg.frame.data3 = distance & 0xFF;
+    msg.frame.data4 = temp;
+    msg.frame.data5 = 0;
+    msg.frame.data6 = 0;
+    msg.frame.data7 = first_dist;
 
-		return selected;
+    CANSPI_Transmit(&msg);
+
+    return selected;
 }
 
 

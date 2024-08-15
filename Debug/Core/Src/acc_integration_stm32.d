@@ -27,7 +27,7 @@ Core/Src/acc_integration_stm32.o: ../Core/Src/acc_integration_stm32.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration.h
+ C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -57,4 +57,4 @@ Core/Src/acc_integration_stm32.o: ../Core/Src/acc_integration_stm32.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
-C:/Users/ryant/jims_projects/sensor_workspace/can_a121_shoot/cortex_m4_gcc/integration/acc_integration.h:
+C:/Users/ryant/jims_projects/sensor_workspace/f4_a121_sensor/cortex_m4_gcc/integration/acc_integration.h:
